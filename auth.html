@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Auth | CrashCrafter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #050505 100%);
+            color: white;
+            min-height: 100vh;
+        }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+        }
+        .input-field {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: 0.3s;
+            color: white;
+        }
+        .input-field:focus {
+            border-color: #6366f1;
+            outline: none;
+            box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+        }
+        .hidden { display: none; }
+    </style>
+</head>
+<body class="flex flex-col items-center justify-center p-4">
+
+    <!-- Logo -->
+    <div class="mb-8 text-center">
+        <h1 class="orbitron text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+            CRASHCRAFTER
+        </h1>
+        <p class="text-[10px] text-gray-500 tracking-[3px] uppercase mt-2">Premium Earning Hub</p>
+    </div>
+
+    <div class="glass-card w-full max-w-md p-8">
+        <!-- Toggler -->
+        <div class="flex mb-8 bg-black/40 p-1 rounded-xl">
+            <button id="loginTab" onclick="toggleAuth('login')" class="w-1/2 py-2 rounded-lg font-bold transition-all bg-indigo-600 text-white">Login</button>
+            <button id="signupTab" onclick="toggleAuth('signup')" class="w-1/2 py-2 rounded-lg font-bold transition-all text-gray-400">Signup</button>
+        </div>
+
+        <!-- Login Form -->
+        <div id="loginForm" class="space-y-4">
+            <h2 class="text-xl font-bold">Welcome Back</h2>
+            <input type="email" id="loginEmail" placeholder="Email Address" class="w-full input-field px-4 py-4 rounded-xl">
+            <input type="password" id="loginPass" placeholder="Password" class="w-full input-field px-4 py-4 rounded-xl">
+            <button onclick="handleLogin()" class="w-full bg-indigo-600 py-4 rounded-xl font-bold hover:bg-indigo-700 transition shadow-lg shadow-indigo-500/20">Login</button>
+        </div>
+
+        <!-- Signup Form -->
+        <div id="signupForm" class="hidden space-y-4">
+            <h2 class="text-xl font-bold">Create Account</h2>
+            <input type="text" id="signupName" placeholder="Full Name" class="w-full input-field px-4 py-4 rounded-xl">
+            <input type="email" id="signupEmail" placeholder="Email Address" class="w-full input-field px-4 py-4 rounded-xl">
+            <input type="password" id="signupPass" placeholder="Password (Min 6 chars)" class="w-full input-field px-4 py-4 rounded-xl">
+            <div id="referralStatus" class="text-[10px] text-indigo-400 italic"></div>
+            <button onclick="handleSignup()" class="w-full bg-purple-600 py-4 rounded-xl font-bold hover:bg-purple-700 transition">Register Now</button>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="mt-10 text-center">
+        <p class="text-xs text-gray-500 italic">Developed by Wasi Developer Pakistan</p>
+        <p class="text-xs text-gray-600">Owner: Mam Alezy Shah</p>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔥 YOUR KEYS INTEGRATED
+        const firebaseConfig = {
+            apiKey: "AIzaSyCutZ4-S27z8DzRQQnREMDLKdP-b3zV95s",
+            authDomain: "cricketpredition-5a66d.firebaseapp.com",
+            databaseURL: "https://cricketpredition-5a66d-default-rtdb.firebaseio.com",
+            projectId: "cricketpredition-5a66d",
+            storageBucket: "cricketpredition-5a66d.firebasestorage.app",
+            messagingSenderId: "980647942349",
+            appId: "1:980647942349:web:8e2100fdc783723623b184"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // Check for Referral Code in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const refCode = urlParams.get('ref');
+        if(refCode) {
+            document.getElementById('referralStatus').innerText = "Referral detected: " + refCode;
+        }
+
+        // SIGNUP LOGIC
+        window.handleSignup = async () => {
+            const name = document.getElementById('signupName').value;
+            const email = document.getElementById('signupEmail').value;
+            const pass = document.getElementById('signupPass').value;
+
+            if(!name || !email || pass.length < 6) {
+                return Swal.fire('Error', 'Please fill all fields (Pass min 6)', 'error');
+            }
+
+            try {
+                const userCredential = await createUserWithEmailAndPassword(auth, email, pass);
+                const user = userCredential.user;
+
+                // Create User Document in Firestore
+                await setDoc(doc(db, "users", user.uid), {
+                    name: name,
+                    email: email,
+                    balance: 0,
+                    activePlan: "None",
+                    dailyIncome: 0,
+                    referredBy: refCode || null, // Saves the referrer ID
+                    lastClaim: "",
+                    joinedAt: new Date()
+                });
+
+                Swal.fire('Success', 'Account Created!', 'success').then(() => {
+                    window.location.href = "dashboard.html";
+                });
+            } catch (error) {
+                Swal.fire('Error', error.message, 'error');
+            }
+        };
+
+        // LOGIN LOGIC
+        window.handleLogin = async () => {
+            const email = document.getElementById('loginEmail').value;
+            const pass = document.getElementById('loginPass').value;
+
+            try {
+                await signInWithEmailAndPassword(auth, email, pass);
+                window.location.href = "dashboard.html";
+            } catch (error) {
+                Swal.fire('Login Failed', 'Invalid email or password', 'error');
+            }
+        };
+
+        // Toggle UI
+        window.toggleAuth = (type) => {
+            if(type === 'signup') {
+                document.getElementById('signupForm').classList.remove('hidden');
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('signupTab').classList.add('bg-indigo-600', 'text-white');
+                document.getElementById('loginTab').classList.remove('bg-indigo-600', 'text-white');
+                document.getElementById('loginTab').classList.add('text-gray-400');
+            } else {
+                document.getElementById('loginForm').classList.remove('hidden');
+                document.getElementById('signupForm').classList.add('hidden');
+                document.getElementById('loginTab').classList.add('bg-indigo-600', 'text-white');
+                document.getElementById('signupTab').classList.remove('bg-indigo-600', 'text-white');
+                document.getElementById('signupTab').classList.add('text-gray-400');
+            }
+        };
+    </script>
+</body>
+</html>

@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | CrashCrafter</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Poppins', sans-serif; background: #050505; color: white; padding-bottom: 90px; overflow-x: hidden; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(15px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .footer-nav { background: rgba(10, 10, 10, 0.98); backdrop-filter: blur(25px); border-top: 1px solid rgba(255, 255, 255, 0.1); }
+        .active-tab { color: #6366f1; transform: translateY(-5px); }
+        
+        /* Mining Spin */
+        .mining-spin { animation: spin 3s linear infinite; filter: drop-shadow(0 0 8px #6366f1); }
+        @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        /* Notification Pulse */
+        .notif-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: red; border-radius: 50%; animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.5); opacity: 0.5; } 100% { transform: scale(1); opacity: 1; } }
+
+        .plan-card { background: linear-gradient(145deg, rgba(99, 102, 241, 0.05), rgba(0, 0, 0, 0.5)); border: 1px solid rgba(255,255,255,0.05); border-radius: 20px; transition: 0.3s; }
+        .plan-card:hover { border-color: #6366f1; transform: scale(1.02); }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+    <!-- Top Scrolling Marquee -->
+    <div class="bg-indigo-600 text-white py-1 px-4 text-[10px] font-bold overflow-hidden sticky top-0 z-[100]">
+        <div class="whitespace-nowrap flex gap-10 animate-marquee italic uppercase tracking-widest" id="scrollingNotice">
+            Loading latest updates from CrashCrafter Admin... Best USA Approved Site for Earning.
+        </div>
+    </div>
+
+    <!-- Header -->
+    <header class="p-5 flex justify-between items-center glass">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-indigo-600 rounded-full flex items-center justify-center font-bold text-lg border-2 border-indigo-400">
+                <span id="userInitial">C</span>
+            </div>
+            <div>
+                <h1 class="text-sm font-bold">Hi, <span id="userName" class="text-indigo-400">Loading...</span></h1>
+                <p class="text-[9px] text-gray-500 uppercase tracking-tighter">Verified Member</p>
+            </div>
+        </div>
+        <div class="flex items-center gap-4">
+            <!-- Notification Icon -->
+            <button onclick="showNotice()" class="relative p-2 bg-white/5 rounded-lg text-gray-400 hover:text-white">
+                <i class="fas fa-bell text-xl"></i>
+                <div class="notif-dot"></div>
+            </button>
+            <button onclick="logout()" class="p-2 bg-red-500/10 text-red-500 rounded-lg"><i class="fas fa-sign-out-alt text-xl"></i></button>
+        </div>
+    </header>
+
+    <main class="p-4 max-w-2xl mx-auto">
+        
+        <!-- HOME TAB -->
+        <section id="home-tab">
+            <!-- Balance Card -->
+            <div class="glass p-8 rounded-[35px] mb-6 bg-gradient-to-br from-indigo-900/40 via-black to-black border-indigo-500/20 relative overflow-hidden">
+                <div class="relative z-10">
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-[10px] bg-white/10 px-3 py-1 rounded-full text-gray-300 font-bold tracking-widest">MINING WALLET</span>
+                        <i class="fas fa-cog mining-spin text-indigo-500 text-2xl"></i>
+                    </div>
+                    <p class="text-gray-400 text-xs uppercase tracking-widest">Main Balance</p>
+                    <h2 class="text-5xl font-extrabold mt-1 tracking-tighter">Rs <span id="userBalance">0.00</span></h2>
+                    
+                    <div class="mt-8 flex gap-3">
+                        <button onclick="switchTab('withdraw')" class="flex-grow bg-indigo-600 hover:bg-indigo-700 py-4 rounded-2xl text-xs font-bold uppercase tracking-widest transition shadow-lg shadow-indigo-600/30">Withdraw</button>
+                        <button onclick="claimProfit()" id="claimBtn" class="flex-grow bg-white text-black py-4 rounded-2xl text-xs font-bold uppercase tracking-widest hidden">Claim Mining</button>
+                    </div>
+                </div>
+                <div class="absolute -right-10 -bottom-10 opacity-5">
+                    <i class="fas fa-shield-alt text-[150px]"></i>
+                </div>
+            </div>
+
+            <!-- Dashboard Stats -->
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="glass p-5 rounded-2xl">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Active Machine</p>
+                    <p class="text-lg font-bold text-indigo-400" id="activePlan">None</p>
+                </div>
+                <div class="glass p-5 rounded-2xl">
+                    <p class="text-[10px] text-gray-500 font-bold uppercase">Daily Income</p>
+                    <p class="text-lg font-bold text-green-500" id="dailyEarn">Rs 0</p>
+                </div>
+            </div>
+
+            <!-- WhatsApp Group Section -->
+            <a href="https://chat.whatsapp.com/LNYC1WwjUJ66xwLFIlhnpJ" target="_blank" class="flex items-center justify-between glass p-5 rounded-2xl mb-6 border border-green-500/20 hover:bg-green-500/10 transition">
+                <div class="flex items-center gap-4">
+                    <div class="w-12 h-12 bg-green-500 rounded-2xl flex items-center justify-center shadow-lg shadow-green-500/20">
+                        <i class="fab fa-whatsapp text-2xl"></i>
+                    </div>
+                    <div>
+                        <p class="font-bold text-sm">Official Support Group</p>
+                        <p class="text-[10px] text-gray-500 uppercase font-bold">Join Community</p>
+                    </div>
+                </div>
+                <i class="fas fa-arrow-right text-gray-700"></i>
+            </a>
+
+            <!-- Referral Card -->
+            <div class="glass p-6 rounded-3xl mb-6 border-dashed border-white/10">
+                <div class="flex justify-between items-center mb-4">
+                    <p class="text-xs font-bold text-indigo-400">Refer & Earn 20% Commission</p>
+                    <i class="fas fa-users text-indigo-500/30"></i>
+                </div>
+                <div class="flex gap-2">
+                    <input type="text" id="refLink" readonly class="flex-grow bg-black/50 border border-white/5 p-4 rounded-2xl text-[10px] text-indigo-300 font-mono focus:outline-none">
+                    <button onclick="copyLink()" class="bg-indigo-600 px-6 rounded-2xl font-bold text-xs">COPY</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLANS TAB (MINING CENTER) -->
+        <section id="plans-tab" class="hidden">
+            <h3 class="text-xl font-bold mb-6 text-indigo-400 italic">Mining Infrastructure</h3>
+            <div class="grid grid-cols-1 gap-4">
+                <!-- All 6 Plans -->
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 1 (2$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 600</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 30</p>
+                    </div>
+                    <button onclick="openDeposit('Starter', 600, 30)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 2 (3.33$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 1000</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 50</p>
+                    </div>
+                    <button onclick="openDeposit('Standard', 1000, 50)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 3 (6$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 1800</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 90</p>
+                    </div>
+                    <button onclick="openDeposit('Pro', 1800, 90)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 4 (10$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 3000</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 150</p>
+                    </div>
+                    <button onclick="openDeposit('Business', 3000, 150)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 5 (16.6$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 5000</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 250</p>
+                    </div>
+                    <button onclick="openDeposit('Gold', 5000, 250)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+
+                <div class="plan-card p-6 flex justify-between items-center">
+                    <div>
+                        <p class="text-[10px] text-indigo-400 font-bold">TIER 6 (33.3$)</p>
+                        <h4 class="text-2xl font-bold text-white">Rs 10000</h4>
+                        <p class="text-xs text-gray-500">Daily Profit: Rs 500</p>
+                    </div>
+                    <button onclick="openDeposit('Diamond', 10000, 500)" class="bg-indigo-600 px-6 py-3 rounded-xl font-bold text-xs uppercase">Activate</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- WALLET TAB (WITHDRAW) -->
+        <section id="withdraw-tab" class="hidden">
+            <div class="glass p-8 rounded-[35px]">
+                <h3 class="text-xl font-bold mb-2">Cashout Funds</h3>
+                <p class="text-[10px] text-gray-500 uppercase mb-8">Withdrawal completes in 40 minutes</p>
+                <div class="space-y-4">
+                    <select id="wBank" class="w-full bg-black/50 p-4 rounded-2xl border border-white/10 text-white">
+                        <option>Easypaisa</option><option>JazzCash</option><option>SadaPay</option><option>NayaPay</option><option>MCB / All Banks</option>
+                    </select>
+                    <input type="text" id="wNum" placeholder="Account Number" class="w-full bg-black/50 p-4 rounded-2xl border border-white/10">
+                    <input type="text" id="wTitle" placeholder="Account Title" class="w-full bg-black/50 p-4 rounded-2xl border border-white/10">
+                    <input type="number" id="wAmt" placeholder="Amount (Min 300)" class="w-full bg-black/50 p-4 rounded-2xl border border-white/10 font-bold text-indigo-400">
+                    <button onclick="submitWithdraw()" class="w-full bg-indigo-600 py-5 rounded-2xl font-bold uppercase tracking-widest text-xs mt-4">Send Request</button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Floating Support Button -->
+    <a href="https://wa.me/923281327440" target="_blank" class="fixed bottom-[100px] right-6 w-14 h-14 bg-green-500 rounded-full flex items-center justify-center text-white text-3xl shadow-2xl shadow-green-500/50 z-[90] animate-bounce-slow">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <!-- Footer Menu -->
+    <nav class="footer-nav fixed bottom-0 left-0 w-full p-4 px-8 flex justify-between items-center z-[110]">
+        <button onclick="switchTab('home')" id="home-icon" class="flex flex-col items-center active-tab">
+            <i class="fas fa-home text-2xl"></i><span class="text-[9px] mt-1 font-bold">HOME</span>
+        </button>
+        <button onclick="switchTab('plans')" id="plans-icon" class="flex flex-col items-center text-gray-600">
+            <i class="fas fa-microchip text-2xl"></i><span class="text-[9px] mt-1 font-bold">MINING</span>
+        </button>
+        <button onclick="switchTab('withdraw')" id="withdraw-icon" class="flex flex-col items-center text-gray-600">
+            <i class="fas fa-wallet text-2xl"></i><span class="text-[9px] mt-1 font-bold">WALLET</span>
+        </button>
+    </nav>
+
+    <!-- Deposit Modal -->
+    <div id="depositModal" class="fixed inset-0 bg-black/98 hidden items-center justify-center p-5 z-[200] backdrop-blur-lg">
+        <div class="glass p-8 w-full max-w-md rounded-[40px] border-indigo-500/30">
+            <h2 class="text-xl font-bold mb-1">Confirm Activation</h2>
+            <p class="text-[10px] text-gray-400 uppercase mb-8">Send amount to the accounts below</p>
+            
+            <div class="space-y-3 mb-8">
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <p class="text-[9px] text-indigo-400 font-bold uppercase mb-1">EASYPAISA</p>
+                    <p class="text-lg font-bold" id="epNum">Loading...</p>
+                </div>
+                <div class="bg-white/5 p-4 rounded-2xl border border-white/10">
+                    <p class="text-[9px] text-red-400 font-bold uppercase mb-1">JAZZCASH</p>
+                    <p class="text-lg font-bold" id="jcNum">Loading...</p>
+                </div>
+            </div>
+
+            <input type="text" id="tidInput" placeholder="Enter Transaction ID (TID)" class="w-full bg-black border border-indigo-500/30 p-5 rounded-2xl mb-4 text-center font-bold text-indigo-400">
+            <button onclick="submitDeposit()" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold uppercase text-xs tracking-widest">Submit Payment</button>
+            <button onclick="document.getElementById('depositModal').classList.add('hidden')" class="w-full mt-4 text-gray-600 text-[10px] font-bold uppercase">Cancel</button>
+        </div>
+    </div>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // 🔥 FIREBASE KEYS INTEGRATED
+        const firebaseConfig = {
+            apiKey: "AIzaSyCutZ4-S27z8DzRQQnREMDLKdP-b3zV95s",
+            authDomain: "cricketpredition-5a66d.firebaseapp.com",
+            projectId: "cricketpredition-5a66d",
+            storageBucket: "cricketpredition-5a66d.firebasestorage.app",
+            messagingSenderId: "980647942349",
+            appId: "1:980647942349:web:8e2100fdc783723623b184"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let userObj = null, userDB = null;
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                userObj = user;
+                onSnapshot(doc(db, "users", user.uid), (snap) => {
+                    userDB = snap.data();
+                    if(userDB) updateUI();
+                });
+            } else { window.location.href = "auth.html"; }
+        });
+
+        function updateUI() {
+            // Fix Name & Info
+            document.getElementById('userName').innerText = userDB.name || "Member";
+            document.getElementById('userInitial').innerText = (userDB.name ? userDB.name[0] : "C").toUpperCase();
+            document.getElementById('userBalance').innerText = userDB.balance.toFixed(2);
+            document.getElementById('activePlan').innerText = userDB.activePlan || "No Plan";
+            document.getElementById('dailyEarn').innerText = "Rs " + (userDB.dailyIncome || 0);
+            document.getElementById('refLink').value = window.location.origin + "/auth.html?ref=" + userObj.uid;
+
+            if(userDB.activePlan !== "None") document.getElementById('claimBtn').classList.remove('hidden');
+            fetchAdmin();
+        }
+
+        async function fetchAdmin() {
+            const snap = await getDoc(doc(db, "settings", "admin"));
+            if(snap.exists()) {
+                const data = snap.data();
+                document.getElementById('epNum').innerText = data.ep || "03XXXXXXXXX";
+                document.getElementById('jcNum').innerText = data.jc || "03XXXXXXXXX";
+                document.getElementById('scrollingNotice').innerText = data.notice || "Official Notice: Safe Earning with CrashCrafter!";
+                window.adminNotice = data.notice || "No new notifications.";
+            }
+        }
+
+        window.showNotice = () => {
+            Swal.fire({
+                title: 'Admin Notification',
+                text: window.adminNotice,
+                icon: 'info',
+                confirmButtonColor: '#6366f1'
+            });
+        };
+
+        window.switchTab = (tab) => {
+            document.getElementById('home-tab').classList.add('hidden');
+            document.getElementById('plans-tab').classList.add('hidden');
+            document.getElementById('withdraw-tab').classList.add('hidden');
+            document.getElementById(tab + '-tab').classList.remove('hidden');
+            document.querySelectorAll('.footer-nav button').forEach(b => b.classList.remove('active-tab'));
+            document.getElementById(tab + '-icon').classList.add('active-tab');
+        };
+
+        window.claimProfit = async () => {
+            const today = new Date().toDateString();
+            if(userDB.lastClaim === today) return Swal.fire('Mining Complete', 'Daily profit already claimed!', 'info');
+            await updateDoc(doc(db, "users", userObj.uid), {
+                balance: userDB.balance + userDB.dailyIncome,
+                lastClaim: today
+            });
+            Swal.fire('Profit Added', 'Mining successful!', 'success');
+        };
+
+        window.openDeposit = (plan, price, daily) => {
+            window.tempPlan = {plan, price, daily};
+            document.getElementById('depositModal').classList.remove('hidden');
+        };
+
+        window.submitDeposit = async () => {
+            const tid = document.getElementById('tidInput').value;
+            if(tid.length < 5) return Swal.fire('Error', 'Invalid Transaction ID', 'error');
+            await addDoc(collection(db, "deposits"), {
+                uid: userObj.uid, email: userObj.email, tid: tid, plan: window.tempPlan.plan, 
+                amount: window.tempPlan.price, daily: window.tempPlan.daily, status: "pending", time: new Date()
+            });
+            Swal.fire('Submitted', 'Plan will activate after verification.', 'success');
+            document.getElementById('depositModal').classList.add('hidden');
+        };
+
+        window.submitWithdraw = async () => {
+            const amt = Number(document.getElementById('wAmt').value);
+            if(amt < 300 || amt > userDB.balance) return Swal.fire('Limit Error', 'Minimum 300 PKR required', 'warning');
+            await addDoc(collection(db, "withdrawals"), {
+                uid: userObj.uid, email: userObj.email, amount: amt, status: "pending",
+                bank: document.getElementById('wBank').value, num: document.getElementById('wNum').value,
+                title: document.getElementById('wTitle').value, time: new Date()
+            });
+            await updateDoc(doc(db, "users", userObj.uid), { balance: userDB.balance - amt });
+            Swal.fire('Processing', 'Funds will arrive in 40 minutes!', 'success');
+        };
+
+        window.copyLink = () => {
+            const link = document.getElementById('refLink');
+            link.select();
+            navigator.clipboard.writeText(link.value);
+            Swal.fire('Link Copied', 'Share with friends to earn 20%', 'success');
+        };
+
+        window.logout = () => signOut(auth);
+    </script>
+
+    <style>
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .animate-marquee { display: inline-block; animation: marquee 15s linear infinite; }
+        .animate-bounce-slow { animation: bounce 3s infinite; }
+    </style>
+</body>
+</html>

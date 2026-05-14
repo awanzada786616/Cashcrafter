@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrashCrafter | Premium Earning Platform</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- AOS Animation Library -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-glow: rgba(99, 102, 241, 0.6);
+            --secondary-glow: rgba(236, 72, 153, 0.6);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #050505;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+
+        /* Animated Background */
+        .bg-glow {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 50% 50%, #1e1b4b 0%, #050505 100%);
+            z-index: -1;
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+        }
+
+        /* Moving Reviews Animation */
+        @keyframes marquee {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+        .marquee-container {
+            display: flex;
+            width: 200%;
+            animation: marquee 20s linear infinite;
+        }
+        .marquee-container:hover { animation-play-state: paused; }
+
+        /* Glowing Button */
+        .btn-glow {
+            box-shadow: 0 0 15px var(--primary-glow);
+            transition: 0.3s;
+        }
+        .btn-glow:hover {
+            box-shadow: 0 0 30px var(--primary-glow);
+            transform: translateY(-3px);
+        }
+
+        /* Bank Logo Hover */
+        .bank-card {
+            transition: 0.4s;
+            filter: grayscale(100%);
+            opacity: 0.6;
+        }
+        .bank-card:hover {
+            filter: grayscale(0%);
+            opacity: 1;
+            transform: scale(1.1);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="bg-glow"></div>
+
+    <!-- Top Moving Notification -->
+    <div class="bg-indigo-600 text-white py-2 overflow-hidden whitespace-nowrap z-[100] sticky top-0">
+        <div class="inline-block animate-pulse px-4">
+            <i class="fas fa-check-circle"></i> OFFICIAL NOTICE: CrashCrafter is the BEST SITE APPROVED IN USA FOR EARNING 2024-25 💸 
+            &nbsp;&nbsp;&nbsp; | &nbsp;&nbsp;&nbsp; Instant Withdrawals Active!
+        </div>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="p-6 flex justify-between items-center max-w-7xl mx-auto">
+        <h1 class="orbitron text-3xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+            CRASHCRAFTER
+        </h1>
+        <a href="auth.html" class="btn-glow bg-indigo-500 px-8 py-3 rounded-full font-bold uppercase tracking-wider text-sm">
+            Join Now
+        </a>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="text-center py-20 px-6">
+        <div data-aos="zoom-in" data-aos-duration="1000">
+            <h2 class="text-5xl md:text-7xl font-extrabold mb-6 leading-tight">
+                Craft Your Future <br> <span class="text-indigo-500">Earn with Trust</span>
+            </h2>
+            <p class="text-gray-400 max-w-2xl mx-auto text-lg mb-10">
+                Experience the next generation of earning platforms. Secure, fast, and globally recognized.
+            </p>
+            <div class="flex justify-center gap-6">
+                <a href="auth.html" class="glass px-10 py-4 font-bold text-xl hover:bg-white hover:text-black transition-all">
+                    Get Started <i class="fas fa-rocket ml-2"></i>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section -->
+    <section class="max-w-7xl mx-auto px-6 py-20 grid grid-cols-1 md:grid-cols-3 gap-10">
+        <div class="glass p-10 text-center" data-aos="fade-up" data-aos-delay="100">
+            <i class="fas fa-users text-5xl text-indigo-500 mb-4"></i>
+            <h3 class="text-4xl font-bold mb-2">10,000+</h3>
+            <p class="text-gray-400 uppercase tracking-widest text-sm">Happy Customers</p>
+        </div>
+        <div class="glass p-10 text-center border-t-4 border-indigo-500" data-aos="fade-up" data-aos-delay="300">
+            <i class="fas fa-wallet text-5xl text-green-500 mb-4"></i>
+            <h3 class="text-4xl font-bold mb-2">5,000+</h3>
+            <p class="text-gray-400 uppercase tracking-widest text-sm">Total Withdrawals</p>
+        </div>
+        <div class="glass p-10 text-center" data-aos="fade-up" data-aos-delay="500">
+            <i class="fas fa-history text-5xl text-orange-500 mb-4"></i>
+            <h3 class="text-4xl font-bold mb-2">40 Min</h3>
+            <p class="text-gray-400 uppercase tracking-widest text-sm">Withdrawal Speed</p>
+        </div>
+    </section>
+
+    <!-- Moving Reviews Section -->
+    <section class="py-20 overflow-hidden bg-white/5">
+        <h2 class="text-center text-3xl font-bold mb-12">Recent Feedback</h2>
+        <div class="marquee-container">
+            <!-- Review cards repeated for seamless loop -->
+            <div class="flex gap-6 px-4">
+                <div class="glass p-6 w-80 shrink-0">
+                    <p class="italic text-gray-300">"Best earning site in Pakistan. Withdrawal within 30 mins received!"</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold">A</div>
+                        <div><h4 class="font-bold text-sm">Ahmed Raza</h4><span class="text-yellow-500 text-xs">★★★★★</span></div>
+                    </div>
+                </div>
+                <div class="glass p-6 w-80 shrink-0">
+                    <p class="italic text-gray-300">"Verified platform. Mam Alezy Shah's team is very helpful."</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-purple-500 flex items-center justify-center font-bold">S</div>
+                        <div><h4 class="font-bold text-sm">Sana Khan</h4><span class="text-yellow-500 text-xs">★★★★★</span></div>
+                    </div>
+                </div>
+                <div class="glass p-6 w-80 shrink-0">
+                    <p class="italic text-gray-300">"Jazzcash withdrawal was super fast. Highly recommended!"</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-pink-500 flex items-center justify-center font-bold">H</div>
+                        <div><h4 class="font-bold text-sm">Hamza Ali</h4><span class="text-yellow-500 text-xs">★★★★★</span></div>
+                    </div>
+                </div>
+                <div class="glass p-6 w-80 shrink-0">
+                    <p class="italic text-gray-300">"I am earning 5k daily from this site. Thanks CrashCrafter!"</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-blue-500 flex items-center justify-center font-bold">Z</div>
+                        <div><h4 class="font-bold text-sm">Zainab</h4><span class="text-yellow-500 text-xs">★★★★★</span></div>
+                    </div>
+                </div>
+            </div>
+            <!-- Duplicated for Loop -->
+            <div class="flex gap-6 px-4">
+                <div class="glass p-6 w-80 shrink-0">
+                    <p class="italic text-gray-300">"Best earning site in Pakistan. Withdrawal within 30 mins received!"</p>
+                    <div class="mt-4 flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-indigo-500 flex items-center justify-center font-bold">A</div>
+                        <div><h4 class="font-bold text-sm">Ahmed Raza</h4><span class="text-yellow-500 text-xs">★★★★★</span></div>
+                    </div>
+                </div>
+                <!-- Add more as needed -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Methods -->
+    <section class="max-w-7xl mx-auto px-6 py-20 text-center">
+        <h2 class="text-2xl font-semibold mb-12 text-gray-400">Supported Withdrawal Methods</h2>
+        <div class="flex flex-wrap justify-center gap-10 md:gap-20">
+            <div class="bank-card text-center">
+                <img src="https://img.icons8.com/color/96/money-transfer.png" class="h-16 mx-auto">
+                <p class="mt-2 text-green-500 font-bold">Easypaisa</p>
+            </div>
+            <div class="bank-card text-center">
+                <img src="https://img.icons8.com/color/96/wallet.png" class="h-16 mx-auto">
+                <p class="mt-2 text-red-500 font-bold">JazzCash</p>
+            </div>
+            <div class="bank-card text-center">
+                <img src="https://img.icons8.com/fluency/96/bank-card-back-side.png" class="h-16 mx-auto">
+                <p class="mt-2 text-teal-400 font-bold">SadaPay</p>
+            </div>
+            <div class="bank-card text-center">
+                <img src="https://img.icons8.com/color/96/bank.png" class="h-16 mx-auto">
+                <p class="mt-2 text-blue-400 font-bold">MCB Bank</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-black/80 py-16 px-6 border-t border-indigo-500/30">
+        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center text-center md:text-left gap-10">
+            <div>
+                <h2 class="orbitron text-3xl font-bold text-indigo-500 mb-4">CrashCrafter</h2>
+                <p class="text-gray-500">The most trusted earning platform <br> Approved in USA & Pakistan.</p>
+            </div>
+            
+            <div class="glass p-6 border-l-4 border-indigo-500">
+                <p class="text-sm text-gray-400">Company Owner</p>
+                <h3 class="text-2xl font-bold text-white uppercase tracking-tighter">Mam Alezy Shah</h3>
+                <div class="mt-4 h-[1px] bg-white/10"></div>
+                <p class="text-sm text-gray-400 mt-2">Developed By</p>
+                <h4 class="text-lg font-medium text-indigo-400">Wasi Developer <br> <span class="text-xs text-gray-500 italic">Chakwal, Pakistan</span></h4>
+            </div>
+        </div>
+        <p class="text-center mt-10 text-gray-700 text-xs">© 2025 CrashCrafter - Secure Earning Network.</p>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            duration: 800,
+            once: true,
+        });
+    </script>
+</body>
+</html>
