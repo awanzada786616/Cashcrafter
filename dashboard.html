@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CrashCrafter AI | Premium Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --bg: #020617; --card: rgba(255,255,255,0.03); --text: #f8fafc; --accent: #6366f1; --border: rgba(255,255,255,0.1); }
+        .light-theme { --bg: #f8fafc; --card: rgba(0,0,0,0.03); --text: #0f172a; --border: rgba(0,0,0,0.1); }
+
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: var(--text); transition: 0.4s; padding-bottom: 100px; }
+        .glass { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--border); border-radius: 30px; }
+        .orbitron { font-family: 'Orbitron', sans-serif; }
+        
+        /* Mining Animation Unit */
+        .white-card { background: linear-gradient(135deg, #ffffff 0%, #e2e8f0 100%); border-radius: 25px; position: relative; box-shadow: 0 10px 30px rgba(99,102,241,0.2); }
+        .glow { position: absolute; width: 50px; height: 50px; background: #22c55e; filter: blur(25px); border-radius: 50%; animation: pulse 2s infinite; }
+        @keyframes pulse { 0%, 100% { opacity: 0.3; transform: scale(1); } 50% { opacity: 0.8; transform: scale(1.3); } }
+        .spin { animation: rotate 10s linear infinite; }
+        @keyframes rotate { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+        .nav-active { color: #6366f1 !important; transform: translateY(-5px); }
+        .hidden { display: none; }
+        .plan-gradient { background: linear-gradient(145deg, rgba(99,102,241,0.1), rgba(0,0,0,0)); }
+    </style>
+</head>
+<body id="mainBody">
+
+    <!-- Header -->
+    <header class="p-6 flex justify-between items-center sticky top-0 z-50 bg-opacity-80 backdrop-blur-md">
+        <div class="flex items-center gap-4">
+            <div class="w-12 h-12 rounded-2xl border-2 border-indigo-500 overflow-hidden">
+                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ9vLqQvsAgeLTuH7KbIjeqtGp8sG-SAAWoaqFbrccWig&s=10" alt="Avatar">
+            </div>
+            <div>
+                <h2 class="text-sm font-bold" id="userName">Loading...</h2>
+                <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">Premium AI Investor</p>
+            </div>
+        </div>
+        <div class="flex gap-3">
+            <button onclick="toggleTheme()" class="w-10 h-10 glass flex items-center justify-center text-yellow-500">
+                <i class="fas fa-moon" id="themeIcon"></i>
+            </button>
+            <button onclick="logout()" class="w-10 h-10 glass flex items-center justify-center text-red-500">
+                <i class="fas fa-power-off"></i>
+            </button>
+        </div>
+    </header>
+
+    <main class="px-5 space-y-6">
+        
+        <!-- DASHBOARD TAB -->
+        <section id="tab-dashboard" class="space-y-6">
+            <!-- Balance Card -->
+            <div class="glass p-8 text-center relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-indigo-600"></div>
+                <p class="text-[10px] text-gray-500 uppercase tracking-[4px] font-bold mb-2">Net Assets (USD)</p>
+                <h1 class="text-5xl font-bold orbitron tracking-tighter mb-8">$<span id="userBalance">0.00</span></h1>
+                
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="switchTab('plans')" class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 glass flex items-center justify-center text-indigo-500"><i class="fas fa-arrow-up"></i></div>
+                        <span class="text-[8px] font-bold">Deposit</span>
+                    </button>
+                    <button onclick="switchTab('withdraw')" class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 glass flex items-center justify-center text-green-500"><i class="fas fa-wallet"></i></div>
+                        <span class="text-[8px] font-bold">Withdraw</span>
+                    </button>
+                    <button onclick="copyLink()" class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 glass flex items-center justify-center text-orange-500"><i class="fas fa-user-plus"></i></div>
+                        <span class="text-[8px] font-bold">Refer</span>
+                    </button>
+                    <button onclick="window.open('https://wa.me/923XXXXXXXXX')" class="flex flex-col items-center gap-2">
+                        <div class="w-12 h-12 glass flex items-center justify-center text-green-400"><i class="fab fa-whatsapp"></i></div>
+                        <span class="text-[8px] font-bold">Support</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mining Unit -->
+            <div class="glass p-6 flex items-center justify-between">
+                <div class="space-y-4">
+                    <div class="flex items-center gap-2">
+                        <div class="w-2 h-2 bg-green-500 rounded-full animate-ping"></div>
+                        <span class="text-[10px] font-bold text-green-500">SYSTEM ACTIVE</span>
+                    </div>
+                    <h3 class="text-3xl font-bold orbitron">$<span id="dailyProfit">0.000</span></h3>
+                    <button onclick="claimProfit()" class="bg-indigo-600 text-[10px] font-bold py-2 px-6 rounded-xl shadow-lg shadow-indigo-600/30">COLLECT DAILY ROI</button>
+                </div>
+                <div class="white-card w-28 h-28 flex items-center justify-center">
+                    <div class="glow"></div>
+                    <i class="fas fa-atom text-indigo-600 text-4xl spin z-10"></i>
+                    <p class="absolute bottom-2 text-[7px] text-black font-black uppercase">Crafter AI</p>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="grid grid-cols-2 gap-4">
+                <div class="glass p-5">
+                    <p class="text-[9px] text-gray-500 font-bold uppercase">Referral Bonus</p>
+                    <p class="text-lg font-bold orbitron text-indigo-400" id="refBonusUSD">$0.00</p>
+                </div>
+                <div class="glass p-5">
+                    <p class="text-[9px] text-gray-500 font-bold uppercase">Total Team</p>
+                    <p class="text-lg font-bold orbitron" id="refCount">0 Members</p>
+                </div>
+            </div>
+
+            <!-- Referral Link -->
+            <div class="glass p-6 space-y-3">
+                <p class="text-xs font-bold text-gray-400">Your Share Link (10% Bonus):</p>
+                <div class="flex gap-2">
+                    <input type="text" id="refLink" readonly class="flex-grow bg-black/20 border border-white/5 rounded-xl px-4 text-[10px] text-indigo-400 font-mono">
+                    <button onclick="copyLink()" class="bg-indigo-600 px-6 py-3 rounded-xl text-[10px] font-bold">COPY</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- PLANS TAB -->
+        <section id="tab-plans" class="hidden space-y-6">
+            <div class="text-center">
+                <h2 class="text-2xl font-bold orbitron text-indigo-500">Investment Tiers</h2>
+                <p class="text-[10px] text-gray-500 uppercase font-bold tracking-widest">Select a plan to start mining</p>
+            </div>
+            <div id="plansContainer" class="space-y-4">
+                <!-- Plans Injected by JS -->
+            </div>
+        </section>
+
+        <!-- WITHDRAW TAB -->
+        <section id="tab-withdraw" class="hidden space-y-6">
+            <div class="glass p-8">
+                <h2 class="text-xl font-bold mb-6 orbitron">Secure Withdrawal</h2>
+                <div class="space-y-4">
+                    <div class="space-y-2">
+                        <label class="text-[10px] font-bold text-gray-500 uppercase ml-2">Select Method</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button onclick="setMethod('Easypaisa')" class="w-full p-3 glass flex items-center gap-3 text-xs font-bold border-indigo-500" id="btnEP">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT5Cao6re9GTg6Vg4wSDDER152sA2P8NqJwvuXy2s03QQ&s=10" class="w-6 h-6 object-contain"> Easypaisa
+                            </button>
+                            <button onclick="setMethod('JazzCash')" class="w-full p-3 glass flex items-center gap-3 text-xs font-bold" id="btnJC">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRSZ2rx0i7jeO5YInEwOLdFIWCrfFKQf9sHJNOWQsaJuw&s=10" class="w-6 h-6 object-contain"> JazzCash
+                            </button>
+                            <button onclick="setMethod('Binance (USDT)')" class="w-full p-3 glass flex items-center gap-3 text-xs font-bold" id="btnBN">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSTteqR_KZgPQdw1oKacXvVPZr8XQuuOnQwZCj_rKh71Q&s" class="w-6 h-6 object-contain"> Binance
+                            </button>
+                            <button onclick="setMethod('SadaPay')" class="w-full p-3 glass flex items-center gap-3 text-xs font-bold" id="btnSP">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR1bBmAz3y28-Bq35DLt3Sb7J-ha0dAgyrn0tQihp_3_g&s" class="w-6 h-6 object-contain"> SadaPay
+                            </button>
+                        </div>
+                    </div>
+                    <input type="number" id="wAmt" placeholder="Amount in USD ($)" class="w-full bg-black/20 border border-white/10 p-5 rounded-2xl text-sm font-bold">
+                    <input type="text" id="wAddr" placeholder="Account Number / Wallet" class="w-full bg-black/20 border border-white/10 p-5 rounded-2xl text-sm font-bold">
+                    <button onclick="submitWithdraw()" class="w-full bg-indigo-600 py-5 rounded-2xl font-bold uppercase text-xs tracking-widest mt-4">Confirm Payout</button>
+                </div>
+            </div>
+            <div id="withdrawHistory" class="space-y-3"></div>
+        </section>
+
+    </main>
+
+    <!-- Bottom Nav -->
+    <nav class="fixed bottom-0 left-0 w-full bg-black/80 backdrop-blur-xl border-t border-white/5 p-6 flex justify-between items-center z-[100] rounded-t-[40px] px-10">
+        <button onclick="switchTab('dashboard')" class="nav-btn nav-active flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-grid-2 text-xl"></i><span class="text-[8px] font-bold">HOME</span>
+        </button>
+        <button onclick="switchTab('plans')" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-rocket text-xl"></i><span class="text-[8px] font-bold">MINING</span>
+        </button>
+        <button onclick="switchTab('withdraw')" class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-wallet text-xl"></i><span class="text-[8px] font-bold">WALLET</span>
+        </button>
+        <button class="nav-btn flex flex-col items-center gap-1 text-gray-500">
+            <i class="fas fa-users text-xl"></i><span class="text-[8px] font-bold">TEAM</span>
+        </button>
+    </nav>
+
+    <!-- Detailed Deposit Modal -->
+    <div id="depositModal" class="fixed inset-0 bg-black/95 hidden items-center justify-center p-6 z-[200]">
+        <div class="glass p-8 w-full max-w-md">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold orbitron text-indigo-400">Deposit $<span id="mPrice">0</span></h2>
+                <p class="text-[9px] text-gray-500 uppercase font-bold tracking-widest">Official Admin Payment Channels</p>
+            </div>
+            
+            <div class="space-y-3 mb-8">
+                <div class="glass p-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/f/ff/Easypaisa_logo.png" class="w-8 h-8 object-contain">
+                        <div><p class="text-[8px] text-gray-500 font-bold">EASYPAISA</p><p class="text-sm font-bold" id="adminEP">Loading...</p></div>
+                    </div>
+                    <button onclick="copyToClipboard('adminEP')" class="text-indigo-400"><i class="fas fa-copy"></i></button>
+                </div>
+                <div class="glass p-4 flex justify-between items-center">
+                    <div class="flex items-center gap-3">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/JazzCash_logo.png" class="w-8 h-8 object-contain">
+                        <div><p class="text-[8px] text-gray-500 font-bold">JAZZCASH</p><p class="text-sm font-bold" id="adminJC">Loading...</p></div>
+                    </div>
+                    <button onclick="copyToClipboard('adminJC')" class="text-indigo-400"><i class="fas fa-copy"></i></button>
+                </div>
+            </div>
+
+            <label class="text-[10px] font-bold text-gray-500 ml-2 uppercase">Input Transaction ID (TID)</label>
+            <input type="text" id="tidInput" placeholder="Enter TID here" class="w-full bg-black p-5 border border-white/10 rounded-2xl text-center text-indigo-400 font-bold mb-6 mt-1">
+            
+            <button onclick="submitDeposit()" class="w-full bg-indigo-600 py-4 rounded-2xl font-bold text-xs uppercase shadow-lg shadow-indigo-600/20">Submit Payment</button>
+            <button onclick="document.getElementById('depositModal').classList.add('hidden')" class="w-full mt-4 text-[10px] text-gray-600 font-bold uppercase">Cancel Investment</button>
+        </div>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getAuth, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, updateDoc, collection, addDoc, onSnapshot, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyCutZ4-S27z8DzRQQnREMDLKdP-b3zV95s",
+            authDomain: "cricketpredition-5a66d.firebaseapp.com",
+            projectId: "cricketpredition-5a66d",
+            storageBucket: "cricketpredition-5a66d.firebasestorage.app",
+            messagingSenderId: "980647942349",
+            appId: "1:980647942349:web:8e2100fdc783723623b184"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let uObj = null, uDB = null;
+        let selectedMethod = "Easypaisa";
+        const PKR_TO_USD = 280;
+
+        const plans = [
+            {n: 'Starter Tier', p: 1, d: 0.05, dur: 40},
+            {n: 'Basic Tier', p: 2, d: 0.10, dur: 40},
+            {n: 'Standard Tier', p: 3, d: 0.15, dur: 40},
+            {n: 'Growth Tier', p: 4, d: 0.20, dur: 40},
+            {n: 'Advanced Tier', p: 5, d: 0.20, dur: 50},
+            {n: 'Pro Tier', p: 10, d: 0.33, dur: 60},
+            {n: 'Business Tier', p: 20, d: 0.44, dur: 90},
+            {n: 'Ultimate Tier', p: 50, d: 0.71, dur: 140}
+        ];
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                uObj = user;
+                onSnapshot(doc(db, "users", user.uid), (snap) => {
+                    uDB = snap.data();
+                    if(uDB) updateDashboard();
+                });
+                fetchTeamCount();
+            } else { window.location.href = "auth.html"; }
+        });
+
+        // Conversion helper
+        function formatUSD(val) {
+            if(!val) return 0;
+            return val > 500 ? (val / PKR_TO_USD) : val;
+        }
+
+        function updateDashboard() {
+            document.getElementById('userName').innerText = uDB.name || "Member";
+            document.getElementById('userBalance').innerText = formatUSD(uDB.balance).toFixed(2);
+            document.getElementById('dailyProfit').innerText = formatUSD(uDB.dailyIncome || 0).toFixed(3);
+            document.getElementById('refBonusUSD').innerText = "$"+formatUSD(uDB.referralBonus || 0).toFixed(2);
+            document.getElementById('refLink').value = window.location.origin + "/auth.html?ref=" + uObj.uid;
+            
+            renderPlans();
+            loadAdminNumbers();
+        }
+
+        async function fetchTeamCount() {
+            const q = query(collection(db, "users"), where("referredBy", "==", uObj.uid));
+            const snap = await getDocs(q);
+            document.getElementById('refCount').innerText = snap.size + " Members";
+        }
+
+        function renderPlans() {
+            const container = document.getElementById('plansContainer');
+            container.innerHTML = "";
+            plans.forEach(plan => {
+                container.innerHTML += `
+                    <div class="glass p-6 flex justify-between items-center plan-gradient border-l-4 border-indigo-600">
+                        <div>
+                            <p class="text-[9px] text-indigo-400 font-bold uppercase tracking-widest">${plan.n}</p>
+                            <h4 class="text-2xl font-bold orbitron">$${plan.p}</h4>
+                            <div class="flex gap-4 mt-1">
+                                <p class="text-[10px] text-gray-500 font-bold">ROI: $${plan.d}/Day</p>
+                                <p class="text-[10px] text-gray-500 font-bold">Term: ${plan.dur} Days</p>
+                            </div>
+                        </div>
+                        <button onclick="openInvest('${plan.n}', ${plan.p}, ${plan.d}, ${plan.dur})" class="bg-indigo-600 px-6 py-3 rounded-2xl text-[10px] font-bold uppercase">Invest</button>
+                    </div>`;
+            });
+        }
+
+        async function loadAdminNumbers() {
+            const snap = await getDoc(doc(db, "settings", "admin"));
+            if(snap.exists()) {
+                document.getElementById('adminEP').innerText = snap.data().ep || "Not Set";
+                document.getElementById('adminJC').innerText = snap.data().jc || "Not Set";
+            }
+        }
+
+        window.openInvest = (n, p, d, dur) => {
+            window.tempPlan = {n, p, d, dur};
+            document.getElementById('mPrice').innerText = p;
+            document.getElementById('depositModal').classList.remove('hidden');
+        };
+
+        window.submitDeposit = async () => {
+            const tid = document.getElementById('tidInput').value;
+            if(tid.length < 5) return Swal.fire('Error', 'Invalid Transaction ID', 'error');
+            await addDoc(collection(db, "deposits"), {
+                uid: uObj.uid, tid, amount: window.tempPlan.p, plan: window.tempPlan.n, status: "pending", time: new Date()
+            });
+            Swal.fire('Submitted', 'Admin will verify your TID soon', 'success');
+            document.getElementById('depositModal').classList.add('hidden');
+        };
+
+        window.setMethod = (m) => {
+            selectedMethod = m;
+            document.querySelectorAll('#tab-withdraw button[id^="btn"]').forEach(b => b.classList.remove('border-indigo-500', 'bg-indigo-600/10'));
+            // Visual feedback logic here
+            Swal.fire('Selected', m + ' Selected', 'info');
+        };
+
+        window.submitWithdraw = async () => {
+            const amt = Number(document.getElementById('wAmt').value);
+            const bal = formatUSD(uDB.balance);
+            if(amt < 1 || amt > bal) return Swal.fire('Error', 'Insufficient Balance or Min $1', 'error');
+            
+            await addDoc(collection(db, "withdrawals"), {
+                uid: uObj.uid, amount: amt, method: selectedMethod, addr: document.getElementById('wAddr').value, status: "pending", time: new Date()
+            });
+            await updateDoc(doc(db, "users", uObj.uid), { balance: bal - amt });
+            Swal.fire('Request Sent', 'Payment processed in 2-24 hours', 'success');
+        };
+
+        window.claimProfit = async () => {
+            const today = new Date().toDateString();
+            if(uDB.lastClaim === today) return Swal.fire('Note', 'Profit already claimed today', 'info');
+            if(!uDB.dailyIncome) return Swal.fire('No Active Plan', 'Please invest to start earning', 'warning');
+            
+            const income = formatUSD(uDB.dailyIncome);
+            const balance = formatUSD(uDB.balance);
+            await updateDoc(doc(db, "users", uObj.uid), { balance: balance + income, lastClaim: today });
+            Swal.fire('Success', 'Daily profit added to wallet', 'success');
+        };
+
+        window.switchTab = (t) => {
+            ['dashboard', 'plans', 'withdraw'].forEach(id => document.getElementById('tab-'+id).classList.add('hidden'));
+            document.getElementById('tab-'+t).classList.remove('hidden');
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('nav-active'));
+            // Logic to highligh correct nav button
+        };
+
+        window.toggleTheme = () => {
+            document.getElementById('mainBody').classList.toggle('light-theme');
+            document.getElementById('themeIcon').classList.toggle('fa-moon');
+            document.getElementById('themeIcon').classList.toggle('fa-sun');
+        };
+
+        window.copyToClipboard = (id) => {
+            const text = document.getElementById(id).innerText;
+            navigator.clipboard.writeText(text);
+            Swal.fire('Copied', 'Account number copied!', 'success');
+        };
+
+        window.logout = () => signOut(auth).then(() => window.location.href = "auth.html");
+        window.copyLink = () => {
+            navigator.clipboard.writeText(document.getElementById('refLink').value);
+            Swal.fire('Copied', 'Referral link copied!', 'success');
+        };
+
+    </script>
+</body>
+</html>
