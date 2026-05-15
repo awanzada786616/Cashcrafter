@@ -412,8 +412,58 @@
         window.logout = () => signOut(auth).then(() => window.location.href = "auth.html");
         window.copyLink = () => { navigator.clipboard.writeText(document.getElementById('refLink').value); Swal.fire('Copied', 'Shared!', 'success'); };
     </script>
-    <!-- Elfsight WhatsApp Chat | Untitled WhatsApp Chat -->
-<script src="https://elfsightcdn.com/platform.js" async></script>
-<div class="elfsight-app-be18c7e8-401e-4682-99e3-027964de8c1d" data-elfsight-app-lazy></div>
+    <!-- WhatsApp Widget Script -->
+<script async src="https://d2mpatx37cqexb.cloudfront.net/delightchat-whatsapp-widget/embeds/embed.min.js"></script>
+
+<script>
+    window.addEventListener('load', function() {
+        var wa_btnSetting = { 
+            btnColor: "#16BE45", 
+            ctaText: "WhatsApp Us", 
+            cornerRadius: 40, 
+            marginBottom: 20, 
+            marginLeft: 20, 
+            marginRight: 20, 
+            btnPosition: "right", 
+            whatsAppNumber: "923281327440", // Updated Number
+            welcomeMessage: "Hello Crash Crafter support", // Updated Name
+            zIndex: 999999, 
+            btnColorScheme: "light" 
+        };
+        var wa_widgetSetting = { 
+            title: "Crash Crafter", // Updated Name
+            subTitle: "Typically replies in minutes", 
+            headerBackgroundColor: "#0061ff", 
+            headerColorScheme: "light", 
+            greetingText: "Hi there! How can we help you today?", 
+            ctaText: "Start Chat", 
+            btnColor: "#1A1A1A" 
+        };
+        if (typeof _waEmbed !== 'undefined') { 
+            _waEmbed(wa_btnSetting, wa_widgetSetting); 
+        }
+    });
+</script>
+
+<!-- Custom CSS for Styling -->
+<style>
+    /* Widget ko thoda smooth animation dene ke liye */
+    #wa-widget-send-button {
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2) !important;
+        transition: transform 0.3s ease-in-out !important;
+    }
+
+    #wa-widget-send-button:hover {
+        transform: scale(1.1); /* Hover karne par halka sa zoom hoga */
+    }
+
+    /* Mobile devices par widget ki position theek karne ke liye */
+    @media screen and (max-width: 768px) {
+        #wa-widget-send-button {
+            bottom: 15px !important;
+            right: 15px !important;
+        }
+    }
+</style>
 </body>
 </html>
